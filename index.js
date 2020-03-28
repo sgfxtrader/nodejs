@@ -30,7 +30,7 @@ sgfx.get("/", (req, res) => {
   res.status(200).send("SGFX: Singapore Forex Xchange");
 });
 
-app.get("/", (req, res) => {
+sgfx.get("/", (req, res) => {
   res.render("index", { title: "Home" });
 });
 
