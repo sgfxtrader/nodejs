@@ -1,6 +1,6 @@
 
 // index.js for SGFX
-// Written by Francis Nai (francisnai@gmail.com)
+// Written by Francis Nai
 // Date: 28 March 2020
 
 /**
@@ -22,15 +22,20 @@ const port = process.env.PORT || 1337;
  */
 sgfx.set("views", path.join(__dirname, "views"));
 sgfx.set("view engine", "pug");
+sgfx.use(express.static(path.join(__dirname, "public")));
 
 /**
  * Routes Definitions
  */
 sgfx.get("/", (req, res) => {
-  res.status(200).send("SGFX: Singapore Forex Xchange");
+  res.render("index", { title: "Home" });
 });
 
-sgfx.get("/", (req, res) => {
+sgfx.get("/user", (req, res) => {
+  res.render("user", { title: "Profile", userProfile: { nickname: "Francis Nai" } });
+});
+
+sgfx.get("/logout", (req, res) => {
   res.render("index", { title: "Home" });
 });
 

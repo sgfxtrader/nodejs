@@ -1,0 +1,13 @@
+extends layout
+
+block layout-content
+	div.View.UserView
+		h1.Banner Welcome, #{userProfile.nickname}!
+	div.Message
+		div.Title
+			h3 Some of the best in APJC
+			h1 Fund Managers Profile
+		pre.Details=JSON.stringify(userProfile, null, 2)
+	div.NavButtons
+		a(href="/logout")
+			div.NavButton Log out
