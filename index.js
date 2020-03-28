@@ -1,16 +1,42 @@
-const http = require('http');
 
-const server = http.createServer((req, res) => {
-  	res.statusCode = 200;
-  	res.setHeader("Content-Type", "text/plain");
-    res.end("Hello World Francis!");
+// index.js for SGFX
+// Written by Francis Nai (francisnai@gmail.com)
+// Date: 28 March 2020
+
+/**
+ * Required External Modules
+ */
+const express = require("express");
+const path = require("path");
+
+
+/**
+ * App Variables
+ */
+const sgfx = express();
+const port = process.env.PORT || 1337;
+
+
+/**
+ *  App Configuration
+ */
+sgfx.set("views", path.join(__dirname, "views"));
+sgfx.set("view engine", "pug");
+
+/**
+ * Routes Definitions
+ */
+sgfx.get("/", (req, res) => {
+  res.status(200).send("SGFX: Singapore Forex Xchange");
 });
 
-const port = process.env.PORT || 1337;
-server.listen(port);
+app.get("/", (req, res) => {
+  res.render("index", { title: "Home" });
+});
 
-console.log("Server running at http://localhost:%d", port);
-
-
-
-
+/**
+ * Server Activation
+ */
+sgfx.listen(port, () => {
+ console.log("Server running at http://localhost:%d", port);
+});
