@@ -1,13 +1,28 @@
 extends layout
 
 block layout-content
-	div.View.WelcomeView
-		h1.Banner SGFX
-		div.Message
-			div.Title
-				h3 Best in class in Asia Pacific and Japan + China (APJC)
-				h1 Top Macro fund managers specializing in Forex and Equities
-			span.Details Access the SGFX Portal
-		div.NavButtons
-			a(href="/user")
-				div.NavButton Log In
+    div.text-center
+        form(class="form-signin" method="POST" action="/user")
+            #error
+                if error
+                    p.text-danger Error!!!
+
+            - var h1Classes = ['h3', 'mb-3', 'font-weight-normal']
+            h1(class=h1Classes) Please sign in
+
+            label(for="inputEmail" class="sr-only") Email address
+            input(type="email" name="username" id="inputEmail" class="form-control" placeholder="Email address" required autofocus)
+
+            label(for="inputPassword" class="sr-only") Password
+            input(type="password" name="password" id="inputPassword" class="form-control" placeholder="Password" required)
+
+            - var divClasses=['form-check', 'mb-3'];
+            div(class=divClasses)
+                input(type="checkbox" class="form-check-input" id="chkRememberMe")
+                label(class="form-check-label" for="chkRememberMe") Remember me
+
+            - var buttonClass=['btn', 'btn-lg', 'btn-primary', 'btn-block'];
+            button(class=buttonClass type="submit") Sign in
+
+            - var pClasses=['mt-3'];
+            p(class=pClasses) &copy; 2020 | SGFX

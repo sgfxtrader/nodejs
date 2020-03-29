@@ -1,4 +1,3 @@
-
 // index.js for SGFX
 // Written by Francis Nai
 // Date: 28 March 2020
@@ -9,13 +8,11 @@
 const express = require("express");
 const path = require("path");
 
-
 /**
  * App Variables
  */
 const sgfx = express();
 const port = process.env.PORT || 1337;
-
 
 /**
  *  App Configuration
@@ -31,8 +28,11 @@ sgfx.get("/", (req, res) => {
   res.render("index", { title: "Home" });
 });
 
-sgfx.get("/user", (req, res) => {
-  res.render("user", { title: "Profile", userProfile: { nickname: "Francis Nai" } });
+sgfx.post("/user", (req, res) => {
+  res.render("user", {
+    title: "Profile",
+    userProfile: { nickname: "Francis Nai" }
+  });
 });
 
 sgfx.get("/logout", (req, res) => {
@@ -43,5 +43,5 @@ sgfx.get("/logout", (req, res) => {
  * Server Activation
  */
 sgfx.listen(port, () => {
- console.log("Server running at http://localhost:%d", port);
+  console.log("Server running at http://localhost:%d", port);
 });
