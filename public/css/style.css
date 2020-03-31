@@ -58,3 +58,7 @@ form > p {
   border-top-left-radius: 0;
   border-top-right-radius: 0;
 }
+
+h3.white, table {
+  color: #fff;
+}

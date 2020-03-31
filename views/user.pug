@@ -2,11 +2,12 @@ extends layout
 
 block layout-content
 	div.jumbotron
-		h1.display-4 Welcome, #{userProfile.nickname}!
+		h1.display-4 Welcome, #{userProfile[0].firstName + " " + userProfile[0].lastName}!
 		p.lead
 			| Some of the best in APJC. 
 		hr.my-4
 		p
 			|  Fund manager profile:
 		pre=JSON.stringify(userProfile, null, 2)
-		a.btn.btn-primary.btn-lg(href='/logout' role='button') Logout
+		a.btn.mr-3.btn-success.btn-sm(href='/logs' role='button') View Logs
+		a.btn.btn-primary.btn-sm(href='/logout' role='button') Logout

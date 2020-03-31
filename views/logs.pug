@@ -1,0 +1,26 @@
+extends layout
+
+block layout-content
+	h3.white Audit Logs
+	table.table.table-hover.table-sm.table-dark
+		thead
+			tr
+				th(scope="col") IP Address
+				th(scope="col") ISP
+				th(scope="col") Country Code
+				th(scope="col") Country
+				th(scope="col") Latitude
+				th(scope="col") Longitude
+				th(scope="col") Timestamp
+		tbody
+			each log in logs
+				tr
+					td #{log.ipAddress}
+					td #{log.isp}
+					td #{log.countryCode}
+					td #{log.country}
+					td #{log.lat}
+					td #{log.lon}
+					td #{log.timestamp}
+	a.btn.mr-3.btn-success.btn-sm(href='/user' role='button') View User
+	a.btn.btn-primary.btn-sm(href='/logout' role='button') Logout
