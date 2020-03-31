@@ -88,7 +88,6 @@ sgfx.get("/logs", (req, res) => {
           .toArray(function(err, result) {
             if (err) throw err;
             // render to page
-            console.log(result)
             res.render("logs", {
               title: "Audit Logs",
               logs: result
@@ -114,114 +113,147 @@ sgfx.post("/login", (req, res) => {
   res.redirect("/user");
 });
 
+/**
+ * Function for inserting log
+ */
+async function logIP() {
+  // get ip details
+  try {
+    const response = await axios.get("http://ip-api.com/json");
+    const data = await response.data;
+    if (data) {
+      // insert record into logs collection
+      const logObj = {
+        ipAddress: data.query,
+        country: data.country,
+        countryCode: data.countryCode,
+        lat: data.lat,
+        lon: data.lon,
+        isp: data.isp,
+        timestamp: timestamp
+      };
+      insertOneDBCollection("logs", logObj)
+    }
+  } catch (err) {
+    console.error(err);
+  }
+}
 
 /**
- * API for inserting log
+ * Function for dropping DB collection by name
  */
-function logIP() {
-  // get ip details
-  axios.get('http://ip-api.com/json')
-    .then(function (response) {
-      MongoClient.connect(
-        dbURL,
-        { useNewUrlParser: true, useUnifiedTopology: true },
-        (err, client) => {
-          if (err) {
-            console.error("An error occurred connecting to MongoDB: ", err);
-          } else {
-            var dbo = client.db(dbName);
-            console.log("database connected!");
-            // insert log
-            const timestamp = new Date().getTime();
-            const logObj = {
-              ipAddress: response.data.query,
-              country: response.data.country,
-              countryCode: response.data.countryCode,
-              lat: response.data.lat,
-              lon: response.data.lon,
-              isp: response.data.isp,
-              timestamp: timestamp
-            };
-            dbo.collection("logs").insertOne(logObj, function(err, res) {
-              if (err) throw err;
-              console.log("Log inserted");
-              // close db
-              client.close();
-            });
-          }
-        }
-      );
-    })
-    .catch(function (error) {
-      // handle error
-      console.log(error);
-    })
-    .finally(function () {
-      // always executed
-    });
+async function dropDBCollection(collectionName) {
+  const client = await MongoClient.connect(dbURL, { useNewUrlParser: true }).catch(err => { console.log(err); });
+  if (!client) {
+    return;
+  }
+
+  try {
+    // create collection
+    let dbo = client.db(dbName);
+    let res = await dbo.collection(collectionName).drop();
+    // console.log(res);
+  } catch (err) {
+    console.log(err);
+  } finally {
+    client.close();
+  }
+}
+
+/**
+ * Function for creating DB collection by name
+ */
+async function createDBCollection(collectionName) {
+  const client = await MongoClient.connect(dbURL, { useNewUrlParser: true }).catch(err => { console.log(err); });
+  if (!client) {
+    return;
+  }
+
+  try {
+    // drop collection
+    let dbo = client.db(dbName);
+    let res = await dbo.createCollection(collectionName);
+    // console.log(res);
+  } catch (err) {
+    console.log(err);
+  } finally {
+    client.close();
+  }
+}
+
+/**
+ * Function for inserting 1 DB collection record
+ */
+async function insertOneDBCollection(collectionName, jsonObj) {
+  const client = await MongoClient.connect(dbURL, { useNewUrlParser: true }).catch(err => { console.log(err); });
+  if (!client) {
+    return;
+  }
+
+  try {
+    // drop users collection if exist
+    let dbo = client.db(dbName);
+    let res = await dbo.collection(collectionName).insertOne(jsonObj);
+    // console.log(res);
+  } catch (err) {
+    console.log(err);
+  } finally {
+    client.close();
+  }
+}
+
+/**
+ * Function for inserting many DB collection records
+ */
+async function insertManyDBCollection(collectionName, jsonArr) {
+  const client = await MongoClient.connect(dbURL, { useNewUrlParser: true }).catch(err => { console.log(err); });
+  if (!client) {
+    return;
+  }
+
+  try {
+    // drop users collection if exist
+    let dbo = client.db(dbName);
+    let res = await dbo.collection(collectionName).insertMany(jsonArr);
+    // console.log(res);
+  } catch (err) {
+    console.log(err);
+  } finally {
+    client.close();
+  }
 }
 
 /**
  * API for setting up database
  */
 sgfx.get("/api/setup_db", (req, res) => {
-  // create db if it's not already created
-  MongoClient.connect(
-    dbURL,
-    { useNewUrlParser: true, useUnifiedTopology: true },
-    (err, client) => {
-      if (err) {
-        console.error("An error occurred connecting to MongoDB: ", err);
-      } else {
-        console.log("Database created!");
+  // db will be auto created if it's not exist
 
-        let dbo = client.db(dbName);
-        // drop users collection if exist
-        dbo.collection("users").drop(function(err, res) {
-          if (err) throw err;
-          if (res) console.log("User collection deleted!");
-          // create users collection
-          dbo.createCollection("users", function(err, res) {
-            if (err) throw err;
-            if (res) console.log("Users collection created!");
-          });
-        });
+  // drop collection if exist
+  dropDBCollection("users");
+  dropDBCollection("logs");
 
-        // drop logs collection if exist
-        dbo.collection("logs").drop(function(err, res) {
-          if (err) throw err;
-          if (res) console.log("Logs collection deleted!");
-          // create logs collection
-          dbo.createCollection("logs", function(err, res) {
-            if (err) throw err;
-            if (res) console.log("Logs collection created!");
-          });
-        });
+  // create collection
+  createDBCollection("users");
+  createDBCollection("logs");
 
-        // insert data into users collection
-        const usersObj = [
-          {
-            userId: 1,
-            firstName: "Francis",
-            lastName: "Nai",
-            email: "francis.nai@sgfx.com"
-          },
-          {
-            userId: 2,
-            firstName: "Joni",
-            lastName: "Liu",
-            email: "joni.liu@sgfx.com"
-          }
-        ];
-        dbo.collection("users").insertMany(usersObj, function(err, res) {
-          if (err) throw err;
-          // close db
-          client.close();
-        });
-      }
+  // insert record into users collection
+  const usersJson = [
+    {
+      userId: 1,
+      firstName: "Francis",
+      lastName: "Nai",
+      email: "francis.nai@sgfx.com"
+    },
+    {
+      userId: 2,
+      firstName: "Joni",
+      lastName: "Liu",
+      email: "joni.liu@sgfx.com"
     }
-  );
-
+  ];
+  insertManyDBCollection("users", usersJson);
+  
   // redirect to index page
   res.redirect("/");
 });
