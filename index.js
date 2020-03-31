@@ -1,5 +1,5 @@
 // index.js for SGFX
-// Written by Francis Nai
+// Written by Francis Nai, Joni Liu
 // Date: 28 March 2020
 
 /**
