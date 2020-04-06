@@ -123,6 +123,7 @@ async function logIP() {
     const data = await response.data;
     if (data) {
       // insert record into logs collection
+      const timestampNow = new Date().getTime();
       const logObj = {
         ipAddress: data.query,
         country: data.country,
@@ -130,7 +131,7 @@ async function logIP() {
         lat: data.lat,
         lon: data.lon,
         isp: data.isp,
-        timestamp: timestamp
+        timestamp: timestampNow
       };
       insertOneDBCollection("logs", logObj)
     }
@@ -154,7 +155,7 @@ async function dropDBCollection(collectionName) {
     let res = await dbo.collection(collectionName).drop();
     // console.log(res);
   } catch (err) {
-    console.log(err);
+    // console.log(err);
   } finally {
     client.close();
   }
@@ -175,7 +176,7 @@ async function createDBCollection(collectionName) {
     let res = await dbo.createCollection(collectionName);
     // console.log(res);
   } catch (err) {
-    console.log(err);
+    // console.log(err);
   } finally {
     client.close();
   }
@@ -196,7 +197,7 @@ async function insertOneDBCollection(collectionName, jsonObj) {
     let res = await dbo.collection(collectionName).insertOne(jsonObj);
     // console.log(res);
   } catch (err) {
-    console.log(err);
+    // console.log(err);
   } finally {
     client.close();
   }
