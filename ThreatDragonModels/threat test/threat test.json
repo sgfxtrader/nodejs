@@ -1,0 +1,12 @@
+{
+  "summary": {
+    "title": "threat test",
+    "owner": "sgfx",
+    "description": "test threat model"
+  },
+  "detail": {
+    "contributors": [],
+    "diagrams": [],
+    "reviewer": "sgfx"
+  }
+}
